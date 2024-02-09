@@ -1,0 +1,14 @@
+GET http://localhost:9999/healthz HTTP/1.1
+
+###
+POST http://localhost:9999/clientes/1/transacoes HTTP/1.1
+Content-Type: application/json
+
+{
+  "valor": 1,
+  "tipo": "c",
+  "descricao": "teste local"
+}
+
+###
+GET http://localhost:9999/clientes/1/extrato HTTP/1.1
