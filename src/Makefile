@@ -1,7 +1,12 @@
-build:
+build: build-x64
+	go build -o dist/rinha2 cmd/main.go # GOOS=darwin GOARCH=arm64 
+
+build-x64:
 	mkdir -p dist
-	GOOS=darwin GOARCH=arm64 go build -o dist/rinha2 cmd/main.go
-	GOOS=linux GOARCH=amd64 go build -o dist/rinha2-x64 cmd/main.go
+	GOOS=linux GOARCH=amd64 go build -o dist/rinha2-x64 -ldflags="-s -w" cmd/main.go
+
+run:
+	go run ./cmd/main.go --debug
 
 transacoes:
 	for  i in `seq 1 40`; do \
@@ -17,4 +22,4 @@ extrato:
 			http://localhost:9999/clientes/1/extrato ;\
 	done
 
-.PHONY: build transacoes extrato
+.PHONY: build build-x64 transacoes extrato
