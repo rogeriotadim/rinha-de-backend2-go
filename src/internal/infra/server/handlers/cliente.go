@@ -37,10 +37,13 @@ func (h *ClienteHandler) AddTransacao(w http.ResponseWriter, r *http.Request) {
 		if err.Error() == "limite" {
 			w.WriteHeader(http.StatusUnprocessableEntity)
 			return
-		} else {
-			w.WriteHeader(http.StatusInternalServerError)
+		}
+		if err.Error() == "o cliente não existe" {
+			w.WriteHeader(http.StatusNotFound)
 			return
 		}
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	dtoOut := dto.TransacaoDtoOut{
 		Saldo:  cliente.Saldo,

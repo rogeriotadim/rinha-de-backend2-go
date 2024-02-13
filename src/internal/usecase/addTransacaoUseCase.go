@@ -34,6 +34,9 @@ func (c *AddTransacaoUseCase) Execute(transacao *model.Transacao) (*model.Client
 	}
 	cliente, err := c.repo.GetSaldo(ctx, tx, transacao.ClienteId)
 	if err != nil {
+		if err.Error() == "404" {
+			return nil, errors.New("o cliente não existe")
+		}
 		return nil, err
 	}
 
