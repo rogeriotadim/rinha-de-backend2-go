@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/rogeriotadim/rinha-de-backend2-go/internal/domain/dto"
 	"github.com/rogeriotadim/rinha-de-backend2-go/internal/domain/model"
 	"github.com/rogeriotadim/rinha-de-backend2-go/internal/usecase"
@@ -25,10 +24,16 @@ func NewClienteHandler(addTransacaoUseCase usecase.AddTransacaoUseCase, getExtra
 
 func (h *ClienteHandler) AddTransacao(w http.ResponseWriter, r *http.Request) {
 	var dtoIn dto.TransacaoDtoIn
-	clienteId := chi.URLParam(r, "id")
+	clienteId := r.PathValue("id")
+
 	err := json.NewDecoder(r.Body).Decode(&dtoIn)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	err = dtoIn.Validate()
+	if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
 		return
 	}
 	transacao := model.CreateTransacao(dtoIn, clienteId)
@@ -54,7 +59,7 @@ func (h *ClienteHandler) AddTransacao(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ClienteHandler) GetExtrato(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	id, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return

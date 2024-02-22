@@ -30,7 +30,7 @@ services:
   
   rinha2:
     # image: rinha:0.9.0
-    image: go-rt-dev:1.21
+    image: go-rt-dev:1.22
     volumes:
       - ./src:/app
     container_name: rinha2
@@ -54,5 +54,5 @@ services:
         limits:
           cpus: '0.45'
           memory: '1.3GB'
-    network_mode: "host"  
+    network_mode: "host"
   

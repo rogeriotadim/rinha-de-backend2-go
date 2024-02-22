@@ -1,11 +1,14 @@
 build: build-x64
-	go build -o dist/rinha2 cmd/main.go # GOOS=darwin GOARCH=arm64 
+	GOARCH=arm64 go build -o dist/rinha2 cmd/main.go # GOOS=darwin 
 
 build-x64:
 	mkdir -p dist
 	GOOS=linux GOARCH=amd64 go build -o dist/rinha2-x64 -ldflags="-s -w" cmd/main.go
 
 run:
+	go run ./cmd/main.go
+
+debug:
 	go run ./cmd/main.go --debug
 
 transacoes:

@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/rogeriotadim/rinha-de-backend2-go/cmd/config"
 	"github.com/rogeriotadim/rinha-de-backend2-go/internal/domain/repository"
 	"github.com/rogeriotadim/rinha-de-backend2-go/internal/infra/database"
@@ -22,12 +21,14 @@ func main() {
 	getExtratoUseCase := usecase.NewGetExtratoUseCase(dbPool, repo)
 	cr := handlers.NewClienteHandler(*addTransacaoUseCase, *getExtratoUseCase)
 
-	r := chi.NewRouter()
-	r.Route("/clientes", func(r chi.Router) {
-		r.Post("/{id}/transacoes", cr.AddTransacao)
-		r.Get("/{id}/extrato", cr.GetExtrato)
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("GET /healthz/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(`{"status":"ok"}`))
 	})
 
-	log.Fatal(http.ListenAndServe(":"+conf.WebServerPort, r))
+	mux.HandleFunc("POST /clientes/{id}/transacoes", cr.AddTransacao)
+	mux.HandleFunc("GET /clientes/{id}/extrato", cr.GetExtrato)
 
+	log.Fatal(http.ListenAndServe(":"+conf.WebServerPort, mux))
 }
